@@ -4,7 +4,7 @@ Kernel command line: -q -mlfqs run mlfqs-load-1
 Pintos booting with: 
 	base_mem: 0x0 ~ 0x9fc00 (Usable: 639 kB)
 	ext_mem: 0x100000 ~ 0x13e0000 (Usable: 19,328 kB)
-Calibrating timer...  209,510,400 loops/s.
+Calibrating timer...  52,377,600 loops/s.
 Boot complete.
 Executing 'mlfqs-load-1':
 (mlfqs-load-1) begin
@@ -15,6 +15,6 @@ Call stack: 0x80042139d1 0x8004216fd3 0x800421a00f 0x8004216e0d 0x8004206636 0x8
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 4626 ticks
-Thread: 0 idle ticks, 4626 kernel ticks, 0 user ticks
+Timer: 4622 ticks
+Thread: 0 idle ticks, 4622 kernel ticks, 0 user ticks
 Console: 
