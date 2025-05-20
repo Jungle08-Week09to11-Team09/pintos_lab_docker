@@ -7,6 +7,8 @@
         "cstdlib": "c",
         "syscall.h": "c",
         "thread.h": "c",
-        "*.inc": "c"
+        "*.inc": "c",
+        "stdint.h": "c",
+        "vm.h": "c"
     }
 }

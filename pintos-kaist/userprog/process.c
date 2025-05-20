@@ -61,6 +61,8 @@ tid_t process_create_initd(const char *file_name)
 
 	// file_name ="args-single onearg"
 	char* prog_name = strtok_r(file_name, " ", &save_ptr);
+	// file_name ="args-single"
+	// fn_copy = "args-single onearg"
 	/* Create a new thread to execute FILE_NAME. */
 	tid = thread_create(file_name, PRI_DEFAULT, initd, fn_copy);
 	if (tid == TID_ERROR)
@@ -77,7 +79,7 @@ initd(void *f_name)
 #endif
 
 	process_init();
-
+	// f_name = "args-single onearg"
 	if (process_exec(f_name) < 0)
 		PANIC("Fail to launch initd\n");
 
@@ -256,7 +258,7 @@ int process_exec(void *f_name)
 	push_stack_fr(&_if);
 	// 레지스터에 main함수에서 쓰이는 첫번째 인자와 두번째 인자 전달.
 	// 주소값을 정수로 전달할 때, uint64_t를 사용. 
-	// hex_dump(_if.rsp, _if.rsp, USER_STACK - (uint64_t)_if.rsp, true);
+	//hex_dump(_if.rsp, _if.rsp, USER_STACK - (uint64_t)_if.rsp, true);
 
 	/* If load failed, quit. */
 	palloc_free_page(file_name);
