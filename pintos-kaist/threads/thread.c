@@ -222,6 +222,14 @@ tid_t thread_create(const char *name, int priority,
 	// [*]2-o 부모의 child list에 생성되는 스레드 t의 elem 넣기.
 	list_push_back(&t->parent->child_list,&t->child_elem);
 
+	// [*]2-B. fd table 관련 수정(이중 포인터로 바꿔뒀으니 동적 할당 받아줘야 함)
+	t->fd_table = palloc_get_multiple(PAL_ZERO, FDT_PAGES); 
+	if (t->fd_table == NULL) {
+    palloc_free_page(t);
+    return TID_ERROR;
+	}
+	t->next_fd = 2; // 0: stdin, 1: stdout
+	
 	/* Call the kernel_thread if it scheduled.
 	 * Note) rdi is 1st argument, and rsi is 2nd argument. */
 	t->tf.rip = (uintptr_t)kernel_thread; // 실행될 함수 주소 설정
@@ -232,14 +240,6 @@ tid_t thread_create(const char *name, int priority,
 	t->tf.ss = SEL_KDSEG;				  // 스택 세그먼트 설정
 	t->tf.cs = SEL_KCSEG;				  // 코드 세그먼트 설정
 	t->tf.eflags = FLAG_IF;				  // 인터럽트 플래그 설정 (인터럽트 활성화)
-
-  // [*]2-K: 표준입력, 표준출력 할당 후 2부터 할당하기
-  //memset(t->fd_table, 0, sizeof(t->fd_table));
-  //printf("%d\n", sizeof(t->fd_table));
-  
-  t->next_fd = 2;  // 0은 입력, 1은 출력에 이미 할당됨
-  t->fd_table[0] = NULL;
-  t->fd_table[1] = NULL;
 
 	/* Add to run queue. */
 	thread_unblock(t); // 스레드를 준비 큐에 추가 (실행 가능 상태로 변경)
@@ -480,9 +480,10 @@ init_thread(struct thread *t, const char *name, int priority)
 	sema_init(&t->fork_sema, 0);
 	t->running = NULL; // [*]2-B. 추가
 
-	// [*]2-o 정상종료가 될경우 값이 바뀌도록 스레드 생성시는 비정상 종료상태로
-	t->exit_status = -1;
+	// [*]2-B. exit_state 초기 설정은 0으로 변경(정상 종료)
+	t->exit_status = 0;
 	t->parent = NULL;
+	t->fd_table = NULL; // fd_table 초기화
 }
 
 /* Chooses and returns the next thread to be scheduled.  Should

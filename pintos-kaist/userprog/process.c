@@ -109,7 +109,6 @@ tid_t process_fork(const char *name, struct intr_frame *if_ UNUSED)
 		}
 	}
 
-
 	sema_down(&cur->fork_sema);
 	// 세마 업으로 깨어났을때, 정상복제인지 복제실패인지 확인하고 실패하면 TID_ERROR 반환;
 	if (real_child->exit_status == -1)
@@ -441,17 +440,29 @@ void process_exit(void)
 	 * TODO: project2/process_termination.html).
 	 * TODO: We recommend you to implement process resource cleanup here. */
 
-	file_close(cur->running);
+
+	// [*]2-B. 메모리 누수 해결!!
+	// 모든 열린 파일 먼저 닫기
+	if (cur->fd_table) {
+		for (int i = 2; i < OPEN_LIMIT; i++) {
+			if (cur->fd_table[i]) {
+				file_close(cur->fd_table[i]);
+				cur->fd_table[i] = NULL;
+			}
+		}
+	}	
+	// fd_table 메모리 해제
+	palloc_free_multiple(cur->fd_table, FDT_PAGES);
+	// 실행 중이던 파일 닫기
+	if (cur->running) {
+		file_close(cur->running);
+	}
+
 
 	sema_up(&cur->exit_sema);
 	sema_down(&cur->free_sema);
 	process_cleanup(); // 그 외 자원 정리 (page table, 파일 디스크립터 등)
 
-	// // [*]2-B. !!!
-	// syscall_handler() 내부에서 case SYS_EXIT 따지고  sys_exit(args[1]); 접근하는 곳에 추가
-	// void sys_exit(int status) {
-	// thread_current()->exit_status = status;
-	// thread_exit();
 }
 
 /* Free the current process's resources. */

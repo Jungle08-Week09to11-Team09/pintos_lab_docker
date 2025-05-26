@@ -172,11 +172,12 @@ sys_write(int fd, const void *buffer, unsigned size) {
   }  
 }
 
-
+// [*]2-K 커널 fork
 pid_t sys_fork(const char *thread_name, struct intr_frame *fff){
   check_address(thread_name);
   return process_fork(thread_name, fff);
 }
+
 // [*]2-K 커널 exec
 int
 sys_exec(const char *cmd_line) {
