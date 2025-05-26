@@ -28,7 +28,7 @@ typedef int tid_t;
 #define PRI_MIN 0	   /* Lowest priority. */
 #define PRI_DEFAULT 31 /* Default priority. */
 #define PRI_MAX 63	   /* Highest priority. */
-#define OPEN_LIMIT 64 // 최대 동시 오픈가능한 파일 수
+#define OPEN_LIMIT 126 // 최대 동시 오픈가능한 파일 수
 
 
 /* A kernel thread or user process.
@@ -102,7 +102,7 @@ struct thread
 	// [*]2-B. 구조체 변경
 	struct file *fd_table[OPEN_LIMIT];  // 오픈한 파일을 가리키는 배열
 	struct file *running;
- 	int next_fd; // 다음 오픈시 부여될 파일디스크립터
+ 	//int next_fd; // 다음 오픈시 부여될 파일디스크립터
 	
 
 #ifdef USERPROG

@@ -240,7 +240,7 @@ sys_close(int fd){
   
   lock_acquire(&filesys_lock);
   file_close(cur->fd_table[fd]);
-    lock_release(&filesys_lock);
+  lock_release(&filesys_lock);
 }
 
 

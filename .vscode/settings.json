@@ -23,6 +23,7 @@
         "file.h": "c",
         "list.h": "c",
         "malloc.h": "c",
-        "syn-read.h": "c"
-}
+        "syn-read.h": "c",
+        "lib.h": "c"
+    }
 }

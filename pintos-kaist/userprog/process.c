@@ -91,7 +91,7 @@ tid_t process_fork(const char *name, struct intr_frame *if_ UNUSED)
 	struct thread *real_child;
 	tid_t tid = thread_create(name, PRI_DEFAULT, __do_fork, if_);
 	if (tid == TID_ERROR)
-	{
+	{	
 		return TID_ERROR;
 	}
 
@@ -255,7 +255,7 @@ __do_fork(void *aux)
 			cur->fd_table[i] = NULL;
 		}
 	}
-	cur->next_fd = cur->parent->next_fd;
+	//cur->next_fd = cur->parent->next_fd;
 	process_init();
 
 		// 중요한 점은, 부모는 자식이 모든 자원 복제에 성공했을 때에만 fork()에서 리턴해야 한다. 하나라도 삐끗하면 succ=flase 처리 해야함.
@@ -441,8 +441,13 @@ void process_exit(void)
 	 * TODO: project2/process_termination.html).
 	 * TODO: We recommend you to implement process resource cleanup here. */
 
-	file_close(cur->running);
 
+	for (int i = 0; i< OPEN_LIMIT; i++){
+		if (cur->fd_table[i]!= NULL){
+			file_close(cur->fd_table[i]);
+		}
+	}
+	file_close(cur->running);
 	sema_up(&cur->exit_sema);
 	sema_down(&cur->free_sema);
 	process_cleanup(); // 그 외 자원 정리 (page table, 파일 디스크립터 등)

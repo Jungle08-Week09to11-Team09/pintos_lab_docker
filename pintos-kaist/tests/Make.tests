@@ -15,7 +15,7 @@ include ../../Makefile.userprog
 endif
 
 TIMEOUT = 30
-MEMORY = 32
+MEMORY = 20
 SWAP_DISK = 4
 
 clean::

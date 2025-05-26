@@ -237,7 +237,7 @@ tid_t thread_create(const char *name, int priority,
   //memset(t->fd_table, 0, sizeof(t->fd_table));
   //printf("%d\n", sizeof(t->fd_table));
   
-  t->next_fd = 2;  // 0은 입력, 1은 출력에 이미 할당됨
+  //t->next_fd = 2;  // 0은 입력, 1은 출력에 이미 할당됨
   t->fd_table[0] = NULL;
   t->fd_table[1] = NULL;
 
@@ -478,7 +478,7 @@ init_thread(struct thread *t, const char *name, int priority)
 	sema_init(&t->exit_sema, 0);
 	sema_init(&t->free_sema, 0);
 	sema_init(&t->fork_sema, 0);
-	t->running = NULL; // [*]2-B. 추가
+	//t->running = NULL; // [*]2-B. 추가
 
 	// [*]2-o 정상종료가 될경우 값이 바뀌도록 스레드 생성시는 비정상 종료상태로
 	t->exit_status = -1;
