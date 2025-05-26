@@ -108,11 +108,9 @@ struct thread
 	// 커널 스택이 overflow 되면 magic 필드가 손상되면서 ASSERT(is_thread(t)) 같은 오류가 발생
 	// 스레드 내부에 정적 배열을 두는 대신, 포인터 한개만 두고 진짜 배열은 밖으로 빼기
 	struct file **fd_table; // 오픈한 파일을 가리키는 배열
-
 	struct file *running;
  	int next_fd; // 다음 오픈시 부여될 파일디스크립터
 	
-
 #ifdef USERPROG
 	/* Owned by userprog/process.c. */
 	uint64_t *pml4; /* Page map level 4 */
@@ -121,10 +119,6 @@ struct thread
 	/* Table for whole virtual memory owned by thread. */
 	struct supplemental_page_table spt;
 #endif
-
-	/* Owned by thread.c. */
-	struct intr_frame tf; /* Information for switching */
-
 	int64_t wakeup_tick; //[*]1-1. local tick 부여
 
 	int init_priority;		   //[*]1-2-3. 초창기 중요도
@@ -144,7 +138,9 @@ struct thread
 	// 자식의 메모리 수거 상태를 기다리는 세마포어
 	struct semaphore free_sema;
 
+	/* Owned by thread.c. */
 	// [*]2-B. magic은 stack overflow 확인용이므로 가장 아래 쪽에 둘 것
+	struct intr_frame tf; /* Information for switching */
 	unsigned magic;		  /* Detects stack overflow. */
 };
 
